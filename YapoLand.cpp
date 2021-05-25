@@ -42,9 +42,11 @@ int main()
     sf::Sprite GucciDuckling1;
     GucciDuckling1.setTexture(texture);
 
+    //20.52.38.191
+    socket.setBlocking(true);
     socket.connect("20.52.38.191", 50003);
 
-    sf::Thread thread(thread_func);
+    sf::Thread thread(&thread_func);
     thread.launch();
 
     while (window.isOpen())
