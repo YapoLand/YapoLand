@@ -45,6 +45,7 @@ int main()
     socket.connect("20.52.38.191", 50003);
 
     sf::Thread thread(thread_func);
+    thread.launch();
 
     while (window.isOpen())
     {        
