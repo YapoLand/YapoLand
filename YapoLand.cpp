@@ -11,15 +11,8 @@ position e_pos {0};
 
 sf::TcpSocket socket;
 
-static bool sock_stat = false;
-
 void thread_func()
 {
-    while (sock_stat == false)
-    {
-
-    }
-
     int array[2] = {pos.x, pos.y};
     int e_array[2];
 
@@ -50,8 +43,6 @@ int main()
     GucciDuckling1.setTexture(texture);
 
     socket.connect("20.52.38.191", 50003);
-
-    sock_stat = true;
 
     sf::Thread thread(thread_func);
 
