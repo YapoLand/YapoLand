@@ -2,9 +2,10 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#include <windows.h>
 #pragma comment(lib, "ws2_32.lib")
 #define ISVALIDSOCKET(s) ((s) != INVALID_SOCKET)
-#define #define CLOSESOCKET(s) closesocket(s)
+#define CLOSESOCKET(s) closesocket(s)
 #else
 #include <unistd.h>
 #include <sys/socket.h>
