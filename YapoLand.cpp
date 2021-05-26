@@ -1,5 +1,6 @@
+#include <thread>
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
+#include "YapoLandSocket.hpp"
 
 struct position
 {
@@ -9,24 +10,38 @@ struct position
 position pos {0};
 position e_pos {0};
 
-sf::TcpSocket socket;
+yl_sock::Tcp_socket client_socket;
 
 void thread_func()
 {
-    int array[2] = {pos.x, pos.y};
-    int e_array[2];
+    while (1)
+    {
+        int array[2];
 
-    size_t received;
+        client_socket.receive<int>(array, sizeof(int) * 2);
 
-    socket.send(array, sizeof(int) * 2);
-    socket.receive(e_array, sizeof(int) * 2, received);
+        e_pos.x = array[0];
+        e_pos.y = array[1];
+    }
+}
 
-    e_pos.x = e_array[0];
-    e_pos.y = e_array[1];
+void thread_func1()
+{
+    while (1)
+    {
+        int array[2] = {pos.x, pos.y};
+
+        client_socket.send<int>(array, sizeof(int) * 2);
+    }
 }
 
 int main()
 {
+    client_socket.connect("20.52.38.191", 50003);
+
+    std::thread thread(thread_func);
+    std::thread thread1(thread_func1);
+
     sf::RenderWindow window(sf::VideoMode(800, 600), "YapoLand");
 
     sf::Texture texture;
@@ -41,13 +56,6 @@ int main()
 
     sf::Sprite GucciDuckling1;
     GucciDuckling1.setTexture(texture);
-
-    //20.52.38.191
-    socket.setBlocking(true);
-    socket.connect("20.52.38.191", 50003);
-
-    sf::Thread thread(&thread_func);
-    thread.launch();
 
     while (window.isOpen())
     {        
@@ -82,6 +90,8 @@ int main()
         }
         
         window.clear(sf::Color::White);
+
+        int array[2] = {pos.x, pos.y};
 
         GucciDuckling.setPosition(pos.x, pos.y);
         GucciDuckling1.setPosition(e_pos.x, e_pos.y);
